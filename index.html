@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title>blinds.js</title>
+
+    <style>
+      body {
+        position: relative;
+        width: 100%; height: 100vh;
+        margin: 0; overflow: hidden;
+      }
+      #canvas {
+        position: absolute;
+        top: 0; right: 0; bottom: 0; left: 0;
+      }
+      .plane { width: 80%; height: 80vh; margin: 10vh auto; }
+      .plane img { display: none; }
+    </style>
+  </head>
+  <body>
+
+    <div id="canvas"></div>
+
+    <div class="plane">
+      <img src="./images/20190825_194252.jpg" />
+    </div>
+
+    <!-- vertex shader -->
+    <script id="plane-vs" type="x-shader/x-vertex">
+      #ifdef GL_ES
+        precision mediump float;
+      #endif
+
+      attribute vec3 aVertexPosition;
+      attribute vec2 aTextureCoord;
+      uniform mat4 uMVMatrix;
+      uniform mat4 uPMatrix;
+      uniform mat4 uTextureMatrix0;
+      varying vec3 vVertexPosition;
+      varying vec2 vTextureCoord;
+      void main() {
+        vec3 vertexPosition = aVertexPosition;
+        gl_Position = uPMatrix * uMVMatrix * vec4(vertexPosition, 1.0);
+        vTextureCoord = (uTextureMatrix0 * vec4(aTextureCoord, 0.0, 1.0)).xy;
+        vVertexPosition = vertexPosition;
+      }
+    </script>
+
+    <!-- fragment shader -->
+    <script id="plane-fs" type="x-shader/x-fragment">
+      #ifdef GL_ES
+        precision mediump float;
+      #endif
+
+      varying vec3 vVertexPosition;
+      varying vec2 vTextureCoord;
+      uniform float uTime;
+      uniform sampler2D uSampler0;
+      void main() {
+        vec2 textureCoord = vTextureCoord;
+        textureCoord.x += sin(textureCoord.y * 25.0) * cos(textureCoord.x * 25.0) * (cos(uTime / 50.0)) / 25.0;
+        gl_FragColor = texture2D(uSampler0, textureCoord);
+      }
+    </script>
+
+    <script src="./index.js"></script>
+    <script type="text/javascript">
+      blinds.render('canvas', document.querySelector('.plane'));
+    </script>
+  </body>
+</html>
