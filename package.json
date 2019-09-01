@@ -4,12 +4,14 @@
   "description": "",
   "main": "dist/index.js",
   "scripts": {
+    "deploy": "gh-pages -d dist",
     "build": "webpack"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "gh-pages": "^2.1.1",
     "webpack": "^4.39.3",
     "webpack-cli": "^3.3.7"
   },
